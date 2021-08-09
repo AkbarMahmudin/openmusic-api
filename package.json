@@ -4,7 +4,10 @@
   "description": "",
   "main": "./src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-dev": "nodemon ./src/server.js",
+    "lint": "eslint ./src",
+    "migrate": "node-pg-migrate"
   },
   "keywords": [
     "api",
@@ -15,7 +18,12 @@
   "author": "akbarmahmudin",
   "license": "ISC",
   "dependencies": {
-    "@hapi/hapi": "^20.1.5"
+    "@hapi/hapi": "^20.1.5",
+    "dotenv": "^10.0.0",
+    "joi": "^17.4.2",
+    "nanoid": "^3.1.23",
+    "node-pg-migrate": "^5.10.0",
+    "pg": "^8.7.1"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
