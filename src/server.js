@@ -2,13 +2,28 @@
 require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
-const songs = require('./api/songs');
 const ClientError = require('./exceptions/ClientError');
-const SongsService = require('./inMemory/postgres/SongsService');
+
+// Songs
+const songs = require('./api/songs');
+const SongsService = require('./service/postgres/SongsService');
 const SongsValidator = require('./validator/songs');
+
+// USers
+const users = require('./api/users');
+const UsersService = require('./service/postgres/UsersService');
+const UsersValidator = require('./validator/users');
+
+// Authentications
+const authentications = require('./api/authentications');
+const AuthenticationsService = require('./service/postgres/AuthenticatoinsService');
+const TokenManager = require('./tokenize/TokenManager');
+const AuthenticationsValidator = require('./validator/authentications');
 
 const init = async () => {
   const songsService = new SongsService();
+  const usersService = new UsersService();
+  const authenticationsService = new AuthenticationsService();
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -20,13 +35,31 @@ const init = async () => {
     },
   });
 
-  await server.register({
-    plugin: songs,
-    options: {
-      service: songsService,
-      validator: SongsValidator,
+  await server.register([
+    {
+      plugin: songs,
+      options: {
+        service: songsService,
+        validator: SongsValidator,
+      },
     },
-  });
+    {
+      plugin: users,
+      options: {
+        service: usersService,
+        validator: UsersValidator,
+      },
+    },
+    {
+      plugin: authentications,
+      options: {
+        authenticationsService,
+        usersService,
+        tokenManager: TokenManager,
+        validator: AuthenticationsValidator,
+      },
+    },
+  ]);
 
   server.ext('onPreResponse', (request, h) => {
     // mendapatkan konteks dari request
