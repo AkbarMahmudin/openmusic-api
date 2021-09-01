@@ -22,6 +22,8 @@ class CollaborationsService {
       throw new InvariantError('Kolaborasi gagal ditambahkan');
     }
 
+    await this._cacheService.delete(`playlists:${userId}`);
+
     return result.rows[0].id;
   }
 

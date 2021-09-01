@@ -34,7 +34,7 @@ class SongsService {
 
   async getSongs() {
     try {
-      const result = await this._cacheService.getSongById('songs');
+      const result = await this._cacheService.get('songs');
       return JSON.parse(result);
     } catch (error) {
       const result = await this._pool.query('SELECT id, title, performer FROM songs');
